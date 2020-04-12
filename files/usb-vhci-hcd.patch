@@ -1,0 +1,46 @@
+--- usb-vhci-hcd.c	2020-04-11 17:33:57.972558823 +0300
++++ usb-vhci-hcd.n	2020-04-11 17:35:58.016935186 +0300
+@@ -19,8 +19,6 @@
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+ 
+-#define DEBUG
+-
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
+@@ -36,6 +34,7 @@
+ #include <linux/usb.h>
+ #include <linux/fs.h>
+ #include <linux/device.h>
++#include <linux/uaccess.h>
+ 
+ #include <asm/atomic.h>
+ #include <asm/bitops.h>
+@@ -1281,7 +1280,7 @@
+ EXPORT_SYMBOL_GPL(usb_vhci_apply_port_stat);
+ 
+ #ifdef DEBUG
+-static ssize_t show_debug_output(struct device_driver *drv, char *buf)
++static ssize_t debug_output_show(struct device_driver *drv, char *buf)
+ {
+ 	if(buf != NULL)
+ 	{
+@@ -1296,7 +1295,7 @@
+ 	return 1;
+ }
+ 
+-static ssize_t store_debug_output(struct device_driver *drv, const char *buf, size_t count)
++static ssize_t debug_output_store(struct device_driver *drv, const char *buf, size_t count)
+ {
+ 	if(count != 1 || buf == NULL) return -EINVAL;
+ 	switch(*buf)
+@@ -1309,7 +1308,7 @@
+ 	return -EINVAL;
+ }
+ 
+-static DRIVER_ATTR(debug_output, S_IRUSR | S_IWUSR, show_debug_output, store_debug_output);
++static DRIVER_ATTR_RW(debug_output);
+ #endif
+ 
+ static int __init init(void)

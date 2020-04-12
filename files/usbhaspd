@@ -1,0 +1,55 @@
+#!/bin/sh
+##########################################
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW="\033[1;33m"
+NC="\033[0m"                  # No Color #
+##########################################
+
+PATH=/sbin:/usr/sbin:/usr/local/bin:/bin:/usr/bin
+NAME=usbhaspd
+PIDFILE=/var/run/$NAME.pid
+DAEMON=/usr/local/bin/usbhasp
+DAEMON_ARGS=" -d /home/keys/*.json"
+SCRIPTNAME=/etc/init.d/$NAME
+DESC="USBHasp Daemon"
+
+[ -x "$DAEMON" ] || exit 0
+
+case "$1" in
+  start)
+        printf "Starting ${YELLOW}$DESC${NC}\n" || true
+        start-stop-daemon --start --quiet --oknodo --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS
+        RETVAL=$?
+        return $RETVAL
+        ;;
+  stop)
+        printf "Stopping ${YELLOW}$DESC${NC}\n" || true
+        start-stop-daemon --stop --quiet --oknodo --pidfile $PIDFILE
+        kill -9 `ps -ef | grep ${DAEMON} | grep -v grep | awk '{ print $2 }'`
+        RETVAL=$?
+        return $RETVAL
+        ;;
+  restart|reload)
+        printf "Restarting ${YELLOW}$DESC${NC}\n" || true
+        $0 stop
+        $0 start
+        ;;
+  status)
+        ps aux | grep $DAEMON | grep -q -v grep
+        PROCESS_STATUS=$?
+        if [ $PROCESS_STATUS -ne 0 ]; then
+           printf "${RED}The process $DAEMON already exited.${NC}\n"
+           exit 1
+        else
+           printf "The process ${YELLOW}$DAEMON${NC} - ${GREEN}OK${NC}\n"
+           exit 0
+        fi
+        ;;
+  *)
+        printf "Usage: ${YELLOW}$SCRIPTNAME${NC} {start|stop|status|restart|reload} \n" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

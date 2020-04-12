@@ -1,0 +1,15 @@
+{
+  "HASP Key": {
+    "Name": "Hasp Key",
+    "Created": "01/01/2010",
+    "Password": "0x00000000",
+    "Type": "0x00000000",
+    "Memory": "0x00000000",
+    "SN": "0x00000000",
+    "Option": "0x00,0x00,0x00",
+    "SecTable": "0x00,0x00,0x00",
+    "NetMemory": "0x00,0x00,0x00",
+    "EDStruct": "0x00,0x00,0x00",
+    "Data": "0x00,0x00,0x00"
+  }
+}

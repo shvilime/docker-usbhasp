@@ -1,5 +1,8 @@
 FROM ubuntu:bionic
-LABEL maintainer="sergo@shvili.me"
+LABEL com.example.is-production="" \
+      com.example.version="0.2" \
+      com.example.release-date="2020-04-12" \
+      description="USB HASP emulator daemon"
 
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 ARG DEBIAN_FRONTEND=noninteractive

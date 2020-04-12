@@ -11,7 +11,7 @@
 ```Bash
 git clone https://github.com/shvilime/docker-usbhasp.git
 ```
-- Положить ключи в формате json в папку keys. 
+- Положить ключи в формате json в папку keys. Находящийся там файл example.json - удалить.
 - Выполнить комманды.
 ```Bash
 ./build.sh

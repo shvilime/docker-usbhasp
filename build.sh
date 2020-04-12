@@ -1,5 +1,5 @@
 #!/bin/bash
 
-VERSION=0.1
+VERSION=0.2
 
-docker build -t usbhasp:${VERSION} .
+docker build -t shvilime/usbhasp:${VERSION} .

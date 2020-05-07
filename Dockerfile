@@ -1,7 +1,5 @@
 FROM ubuntu:bionic
-LABEL com.example.is-production="" \
-      com.example.version="0.3" \
-      com.example.release-date="2020-04-20" \
+LABEL com.example.version="0.4" \
       description="USB HASP emulator daemon"
 
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
@@ -15,7 +13,7 @@ RUN dpkg --add-architecture i386; \
     apt-get update; \
     # ---- Install packages ------------------------------------------------------------
     apt-cache search linux-headers; \
-    apt-get install -y --no-install-recommends linux-headers-$(uname -r) build-essential automake autoconf libtool libusb-0.1-4:i386 libjansson-dev git; \
+    apt-get install -y --no-install-recommends linux-headers-$(uname -r) build-essential automake autoconf libtool libusb-0.1-4:i386 libjansson-dev kmod git; \
     cd /tmp; \
     # ---- Clone vhci_hcd, libusb_vhci, UsbHasp from repositories ----------------------
     git clone git://git.code.sf.net/p/usb-vhci/vhci_hcd; \
@@ -39,6 +37,14 @@ RUN dpkg --add-architecture i386; \
     make; \
     cp /tmp/UsbHasp/dist/Release/GNU-Linux/usbhasp /usr/local/bin/; \
     ldconfig; \
+    # ---- Configure autoloading custom modules ----------------------------------------
+    touch /etc/modules; \
+    echo 'usb-vhci-hcd' >> /etc/modules; \
+    echo 'usb-vhci-iocifc' >> /etc/modules; \
+    touch /lib/modules/$(uname -r)/modules.dep; \
+    echo 'usb-vhci-hcd.ko' >> /lib/modules/$(uname -r)/modules.dep; \
+    echo 'usb-vhci-iocifc.ko' >> /lib/modules/$(uname -r)/modules.dep; \
+    depmod -ae; \
     # ---- Clear docker image ----------------------------------------------------------
     apt-get remove --purge -y linux-headers-$(uname -r) build-essential automake autoconf libtool git; \
     apt-get clean autoclean; \
@@ -47,5 +53,4 @@ RUN dpkg --add-architecture i386; \
     rm -rf /tmp/*; \
     rm -rf /var/lib/apt/lists/*
 
-VOLUME /home/keys
 CMD /etc/init.d/usbhaspd start; tail -f /dev/null

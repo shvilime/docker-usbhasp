@@ -1,5 +1,5 @@
 FROM ubuntu:bionic
-LABEL com.example.version="0.4" \
+LABEL com.example.version="0.6" \
       description="USB HASP emulator daemon"
 
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
@@ -53,4 +53,4 @@ RUN dpkg --add-architecture i386; \
     rm -rf /tmp/*; \
     rm -rf /var/lib/apt/lists/*
 
-CMD /etc/init.d/usbhaspd start; tail -f /dev/null
+CMD modprobe usb-vhci-iocifc; /etc/init.d/usbhaspd start; tail -f /dev/null

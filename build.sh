@@ -5,7 +5,7 @@ NAME=$(grep name env | cut -d '=' -f2)
 ACCOUNT=$(grep account env | cut -d '=' -f2)
 
 # Delete previous image
-if docker images | grep -q $NAME; then 
+if docker images | grep -q ${NAME}.*${VERSION}; then 
    docker rmi ${ACCOUNT}/${NAME}:${VERSION}
 fi
 
